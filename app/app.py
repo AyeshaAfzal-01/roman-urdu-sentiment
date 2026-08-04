@@ -1,9 +1,6 @@
 """
 Streamlit demo: Roman-Urdu sentiment classifier.
 Uses a pretrained, already-fine-tuned transformer (Khubaib01/roman-urdu-sentiment-xlm-r).
-
-Run: streamlit run app/app.py
-(run this command from the project root folder)
 """
 
 import streamlit as st
@@ -20,49 +17,111 @@ def load_model():
 
 
 def main():
-    st.set_page_config(page_title="Roman-Urdu Sentiment Classifier", page_icon="🎭")
-    st.title("🎭 Roman-Urdu Sentiment Classifier")
-    st.write(
-        "Type a sentence in Roman-Urdu (Urdu written in English letters) "
-        "and get its predicted sentiment."
+    st.set_page_config(
+        page_title="Roman-Urdu Sentiment",
+        page_icon="💬",
+        layout="centered",
     )
 
-    with st.spinner("Loading model (first load takes longer)..."):
+    st.markdown("""
+    <style>
+        .block-container{
+            max-width:750px;
+            padding-top:2rem;
+            padding-bottom:3rem;
+        }
+
+        .title{
+            font-size:2rem;
+            font-weight:700;
+            margin-bottom:0.2rem;
+        }
+
+        .subtitle{
+            color:#777;
+            margin-bottom:2rem;
+        }
+
+        .result-card{
+            border:1px solid #E6E6E6;
+            border-radius:14px;
+            padding:20px;
+            margin-top:20px;
+        }
+
+        .score{
+            color:#666;
+            font-size:15px;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<div class='title'>Roman-Urdu Sentiment</div>", unsafe_allow_html=True)
+    st.markdown(
+        "<div class='subtitle'>Analyze the sentiment of Roman-Urdu text using a fine-tuned transformer.</div>",
+        unsafe_allow_html=True,
+    )
+
+    with st.spinner("Loading model..."):
         classifier = load_model()
 
     user_input = st.text_area(
-        "Enter text:",
-        placeholder="e.g. yeh bohat acha tha",
-        height=100,
+        "Input text",
+        placeholder="Yeh movie bohat achi thi...",
+        height=130,
+        label_visibility="collapsed",
     )
 
-    if st.button("Predict Sentiment", type="primary"):
+    if st.button("Analyze", use_container_width=True):
+
         if not user_input.strip():
-            st.warning("Please enter some text first.")
+            st.warning("Please enter some text.")
             return
 
-        with st.spinner("Predicting..."):
+        with st.spinner("Analyzing..."):
             result = classifier(user_input)[0]
 
         prediction = result["label"]
         confidence = result["score"]
 
-        emoji_map = {"Positive": "\U0001F60A", "Negative": "\U0001F61E", "Neutral": "\U0001F610"}
-        st.subheader(f"{emoji_map.get(prediction, '')} {prediction}")
-        st.write(f"Confidence: {confidence*100:.1f}%")
-        st.progress(float(confidence))
+        colors = {
+            "Positive": "#2E8B57",
+            "Negative": "#D32F2F",
+            "Neutral": "#F9A825"
+        }
 
-    with st.expander("About this project"):
-        st.write(
-            "Trained/evaluated on ~19,500 manually-labeled Roman-Urdu sentences "
-            "(reviews, comments, tweets). Uses a transformer (xlm-roberta) "
-            "fine-tuned specifically for Roman-Urdu, which has no standard "
-            "spelling -- a genuinely harder NLP problem than standard English "
-            "sentiment analysis. Achieves 0.67 macro F1 on held-out test data, "
-            "outperforming a TF-IDF baseline (0.63) and a generic multilingual "
-            "embedding model (0.53) that wasn't trained on Roman-Urdu specifically."
+        emojis = {
+            "Positive": "😊",
+            "Negative": "😞",
+            "Neutral": "😐"
+        }
+
+        st.markdown(
+            f"""
+    <div class="result-card">
+        <h3 style="margin-bottom:5px;color:{colors.get(prediction)};">
+            {emojis.get(prediction)} {prediction}
+        </h3>
+
+        <div class="score">
+            Confidence: <b>{confidence*100:.1f}%</b>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
         )
 
+    st.divider()
+
+    with st.expander("About"):
+        st.write(
+            """
+            This model is based on **XLM-RoBERTa** and is fine-tuned for
+            Roman-Urdu sentiment classification using approximately **19.5k**
+            manually labeled sentences collected from reviews, comments, and
+            social media posts.
+            """
+        )
 
 if __name__ == "__main__":
     main()
