@@ -1,0 +1,8 @@
+models/
+data/roman_urdu_raw.csv
+data/roman_urdu_clean.csv
+data/misclassified_examples.csv
+__pycache__/
+*.pyc
+.venv/
+venv/
