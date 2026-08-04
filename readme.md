@@ -2,7 +2,7 @@
 
 A sentiment analysis pipeline for **Roman-Urdu** (Urdu written in Latin script) - a genuinely harder NLP problem than standard English sentiment analysis, since Roman-Urdu has **no standardized spelling** (e.g. "acha", "acha", and "achaa" all mean the same thing).
 
-**[Live demo](#)** *(add your deployed Streamlit link here)*
+**[Live demo](#)** *https://roman-urdu-sentiment.streamlit.app/*
 
 ---
 
