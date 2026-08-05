@@ -5,16 +5,14 @@ Uses a pretrained, already-fine-tuned transformer (Khubaib01/roman-urdu-sentimen
 
 import streamlit as st
 from transformers import pipeline
+import os
 
-MODEL_NAME = "Khubaib01/roman-urdu-sentiment-xlm-r"
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "models", "finetuned_model")
 
 
 @st.cache_resource
 def load_model():
-    # cached so the ~1.1GB model loads only ONCE per app session,
-    # not on every button click
-    return pipeline("text-classification", model=MODEL_NAME, truncation=True)
-
+    return pipeline("text-classification", model=MODEL_PATH, tokenizer=MODEL_PATH, truncation=True)
 
 def main():
     st.set_page_config(
