@@ -5,14 +5,14 @@ Uses a pretrained, already-fine-tuned transformer (Khubaib01/roman-urdu-sentimen
 
 import streamlit as st
 from transformers import pipeline
-import os
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "models", "finetuned_model")
+# Load directly from Hugging Face Hub instead of a non-existent local directory
+MODEL_ID = "Khubaib01/roman-urdu-sentiment-xlm-r"
 
 
 @st.cache_resource
 def load_model():
-    return pipeline("text-classification", model=MODEL_PATH, tokenizer=MODEL_PATH, truncation=True)
+    return pipeline("text-classification", model=MODEL_ID, tokenizer=MODEL_ID, truncation=True)
 
 def main():
     st.set_page_config(
@@ -97,8 +97,8 @@ def main():
         st.markdown(
             f"""
     <div class="result-card">
-        <h3 style="margin-bottom:5px;color:{colors.get(prediction)};">
-            {emojis.get(prediction)} {prediction}
+        <h3 style="margin-bottom:5px;color:{colors.get(prediction, '#000000')};">
+            {emojis.get(prediction, '😶')} {prediction}
         </h3>
 
         <div class="score">
